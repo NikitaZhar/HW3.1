@@ -9,57 +9,51 @@ import SwiftUI
 
 struct ContentView: View {
     
-    enum light {
-        case red
-        case yellow
-        case green
-    }
-    
     @State private var buttonPressed = false
-    @State private var buttonTitle = "START"
+    @State private var buttonTitle = ButtonTitle(buttonTitle: "START")
     @State private var currentLight = Color(.red)
-    
+    @State private var redCircle = ColorCircle(color: .red, opacity: 0.3)
+    @State private var yellowCircle = ColorCircle(color: .yellow, opacity: 0.3)
+    @State private var greenCircle = ColorCircle(color: .green, opacity: 0.3)
     
     var body: some View {
         ZStack {
             Color(.black)
                 .ignoresSafeArea()
             VStack {
-                
-                
-                ColorCircle(color: .red, opacity: 0.3)
-
-                ColorCircle(color: .yellow, opacity: 0.3)
-
-                ColorCircle(color: .green, opacity: 0.3)
-                    
+                redCircle
+                yellowCircle
+                greenCircle
                 Spacer()
-                Button(action: { PressedButton() }, label: {
-                    Text(buttonTitle)
-                        .frame(width: 170, height: 50)
-                        .font(.largeTitle)
-                        .foregroundColor(.white)
-                        .background(Color(.blue))
-                        .overlay(RoundedRectangle(cornerRadius: 15).stroke(Color.white, lineWidth: 5))
-                })
+                Button(action: { PressedButton() }, label: { buttonTitle } )
                 .padding()
             }.padding()
         }
     }
+    
     private func PressedButton() {
         if !buttonPressed {
             buttonPressed.toggle()
-            buttonTitle = "NEXT"
+            buttonTitle.buttonTitle = "NEXT"
+            redCircle.opacity = 1.0
+            return
         }
-//        switch currentLight {
-//        case .red:
-//            <#code#>
-//        case .yellow:
-//            <#code#>
-//        case .green:
-//            <#code#>
-//        }
-        
+        switch currentLight {
+        case Color(.red):
+            redCircle.opacity = 0.3
+            yellowCircle.opacity = 1.0
+            currentLight = Color(.yellow)
+        case Color(.yellow):
+            yellowCircle.opacity = 0.3
+            greenCircle.opacity = 1.0
+            currentLight = Color(.green)
+        case Color(.green):
+            greenCircle.opacity = 0.3
+            redCircle.opacity = 1.0
+            currentLight = Color(.red)
+        default:
+            return
+        }
     }
 }
 
